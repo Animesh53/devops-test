@@ -1,0 +1,29 @@
+FROM python:3.9
+
+# Set default environment to DEV, but allow it to be overridden
+ARG ENV=DEV
+ENV APP_ENV=$ENV
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the application files to the container
+COPY . .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose the application's port
+EXPOSE 8000
+
+# Set environment-specific configurations
+RUN if [ "$APP_ENV" = "DEV" ]; then \
+        echo "Running in Development mode"; \
+    elif [ "$APP_ENV" = "UAT" ]; then \
+        echo "Running in UAT mode"; \
+    elif [ "$APP_ENV" = "PROD" ]; then \
+        echo "Running in Production mode"; \
+    fi
+
+# Define the command to run the application
+CMD ["python", "app.py"]
